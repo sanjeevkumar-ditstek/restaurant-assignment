@@ -16,7 +16,7 @@ You have to install `nodemon` as global dependency by `npm install -g nodemon`
 - Mongodb
 
 ### Directories
- src:
+ - src:
     - controllers (controllers and logical part of the application)
     - interfaces (Interfaces used for typescript)
     - middlewares (application's middlewares)
