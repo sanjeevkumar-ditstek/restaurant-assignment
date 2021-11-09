@@ -27,7 +27,7 @@ You have to install `nodemon` as global dependency by `npm install -g nodemon`
     - types (types used for typescript)
     - utils (utilities functions used in aplication)
 
-### challenges/problems Encounters
+### Challenges/problems Encounters
 - For creating custom seeder for productcategory collection.
 ### Installation and Setup Instructions
 

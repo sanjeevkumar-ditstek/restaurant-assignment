@@ -19,6 +19,8 @@ const modelschema: Schema = new Schema({
 		type: String,
 		default: "Active",
 	},
+    createdAt: Number,
+    updatedAt: Number,
 }, {
 	timestamps: { currentTime: () => Math.floor(Date.now() / 1000) }
 });

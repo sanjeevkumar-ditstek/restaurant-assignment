@@ -39,8 +39,10 @@ const modelschema: Schema = new Schema({
 		type: String,
 		default: Status.Active,
 	},
+    createdAt: Number,
+    updatedAt: Number,
 }, {
-	timestamps: { currentTime: () => Math.floor(Date.now() / 1000) }
+    timestamps: { currentTime: () => Math.floor(Date.now() / 1000) }
 });
 
 modelschema.virtual('restaurant', {
