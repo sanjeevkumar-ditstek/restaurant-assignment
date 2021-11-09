@@ -22,14 +22,22 @@ You have to install `nodemon` as global dependency by `npm install -g nodemon`
     - middlewares (application's middlewares)
     - models (mongo database's models)
     - routes (api routes)
+    - seeders (Custom seeders for creating productcategories)
     - services (database quering for application)
     - types (types used for typescript)
     - utils (utilities functions used in aplication)
+
+### challenges/problems Encounters
+- For creating custom seeder for productcategory collection.
 ### Installation and Setup Instructions
 
 Installation of dependencies (project's root directory):
 
 `npm install` or `npm i`
+
+To create Seeder (for creating productcategories collection with data)
+
+`npm run seeder`
   
 To Start Server (as Development):
 
@@ -41,4 +49,4 @@ To Start Server (as Production):
 
 To Access API on:
 
-`http://localhost:3000`
+`http://localhost:3001`

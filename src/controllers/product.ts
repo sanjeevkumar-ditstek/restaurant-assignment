@@ -1,20 +1,31 @@
+import Joi from "joi"
 import {Request, Response} from '../types/express'
 import ProductService from '../services/product'
 import IProduct from "../interfaces/IProduct";
-import Joi from "joi"
 import joiErrorHandler from '../utils/joiErrorHandler';
 import ApiResponse from "../utils/apiResponse";
 import StatusCodes from '../utils/statusCodes';
+import {API_URL} from '../env'
 
+/**
+ * list of products of a restaurant
+ * @param  {Request} req
+ * @param  {Response} res
+ */
 const list = async(req: Request, res: Response) => {
     let {restaurantId} = req.params
     let products: IProduct[] = await ProductService.list(restaurantId)
     return ApiResponse.success(res, {products});
 }
 
+/**
+ * create new product in restaurant of specific category
+ * @param  {Request} req
+ * @param  {Response} res
+ */
 const add = async(req: Request, res: Response) => {
-    let body = {...req.body, image: req.file?.path}
-
+    let body = {...req.body, image: API_URL + "/uploads/" + req.file?.filename}
+    
     const {error, value} = Joi.object().keys({
         name: Joi.string().required(),
         image: Joi.string().required(),
@@ -40,6 +51,11 @@ const add = async(req: Request, res: Response) => {
     }
 }
 
+/**
+ * view process information
+ * @param  {Request} req
+ * @param  {Response} res
+ */
 const view = async(req: Request, res: Response) => {
     let {id} = req.params
     let product: IProduct =  await ProductService.view(id)
@@ -50,13 +66,21 @@ const view = async(req: Request, res: Response) => {
     }
 }
 
+/** 
+ * update a product
+ * @param  {Request} req
+ * @param  {Response} res
+ */
 const edit = async(req: Request, res: Response) => {
     let {id} = req.params
     let product: IProduct =  await ProductService.view(id)
     if(!product){
         return ApiResponse.error(res, StatusCodes.BAD_REQUEST, StatusCodes.getStatusMessage(StatusCodes.BAD_REQUEST));
     }
-    let body = {...req.body, image: req.file?.path}
+    let body = {...req.body}
+    if(req.file){
+        body.image = API_URL + "/uploads/" + req.file?.filename
+    }
     const {error, value} = Joi.object().keys({
         name: Joi.string().required(),
         image: Joi.string().optional(),
@@ -68,7 +92,13 @@ const edit = async(req: Request, res: Response) => {
     if (error) {
         return joiErrorHandler(error, res)
     }
-    let response: IProduct =  await ProductService.edit(id, body)
+    let response: IProduct
+    try {
+        response =  await ProductService.edit(id, body)
+    } catch (error) {
+        return ApiResponse.error(res, StatusCodes.BAD_REQUEST, error.message);
+    }
+    
     if(response){
         return ApiResponse.success(res, {product: response});
     }else{
@@ -76,6 +106,10 @@ const edit = async(req: Request, res: Response) => {
     }
 }
 
+/** remove product
+ * @param  {Request} req
+ * @param  {Response} res
+ */
 const remove = async(req: Request, res: Response) => {
     let {id} = req.params
     let product: IProduct =  await ProductService.view(id)

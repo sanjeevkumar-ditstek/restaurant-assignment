@@ -1,18 +1,27 @@
+import Joi from "joi"
 import {Request, Response} from '../types/express'
 import RestaurantService from '../services/restaurant'
 import IRestaurant from "../interfaces/IRestaurnat";
-import Joi from "joi"
 import joiErrorHandler from '../utils/joiErrorHandler';
 import ApiResponse from "../utils/apiResponse";
 import StatusCodes from "../utils/statusCodes";
-
+import {API_URL} from '../env'
+/**
+ * list of all the restaurants
+ * @param  {Request} req
+ * @param  {Response} res
+ */
 const list = async(req: Request, res: Response) => {
     let restaurants: IRestaurant[] =  await RestaurantService.list()
     return ApiResponse.success(res, {restaurants});
 }
 
+/** creating new restaurant
+ * @param  {Request} req
+ * @param  {Response} res
+ */
 const add = async(req: Request, res: Response) => {
-    let body = {...req.body, image: req.file?.path}
+    let body = {...req.body, image: API_URL + "/uploads/" + req.file?.filename}
 
     const {error, value} = Joi.object().keys({
         name: Joi.string().required(),
@@ -44,6 +53,11 @@ const add = async(req: Request, res: Response) => {
     }
 }
 
+/**
+ * view restaurant information
+ * @param  {Request} req
+ * @param  {Response} res
+ */
 const view = async(req: Request, res: Response) => {
     let {id} = req.params
     let restaurant: IRestaurant =  await RestaurantService.view(id)
@@ -54,14 +68,21 @@ const view = async(req: Request, res: Response) => {
     }
 }
 
+/**
+ * Update Restaurant information
+ * @param  {Request} req
+ * @param  {Response} res
+ */
 const edit = async(req: Request, res: Response) => {
     let {id} = req.params
     let restaurant: IRestaurant =  await RestaurantService.view(id)
     if(!restaurant){
         return ApiResponse.error(res, StatusCodes.BAD_REQUEST, StatusCodes.getStatusMessage(StatusCodes.BAD_REQUEST));
     }
-
-    let body = {...req.body, image: req.file?.path}
+    let body = {...req.body}
+    if(req.file){
+        body.image = API_URL + "/uploads/" + req.file?.filename
+    }
     const {error, value} = Joi.object().keys({
         name: Joi.string().required(),
         image: Joi.string(),
@@ -87,6 +108,11 @@ const edit = async(req: Request, res: Response) => {
     
 }
 
+/**
+ * Remove a restaurant from db
+ * @param  {Request} req
+ * @param  {Response} res
+ */
 const remove = async(req: Request, res: Response) => {
     let {id} = req.params
     let restaurant: IRestaurant =  await RestaurantService.view(id)
