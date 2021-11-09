@@ -50,3 +50,7 @@ To Start Server (as Production):
 To Access API on:
 
 `http://localhost:3001`
+
+### Postman Collection for api
+
+`https://www.getpostman.com/collections/621f348e3174391be893`
